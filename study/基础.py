@@ -104,3 +104,90 @@ print('格式化指定是否补0：%2d-%02d' % (3, 1))
 print('格式化指定小数位数：%.2f' % 3.1415926)
 
 print('format 方式格式化，参数一({0})，参数二({1:.1f}) '.format('abc', 18.245))
+
+
+print('---------------list----------------')
+# list 内置的数据结构，是有序的集合，可以随时添加和删除其中的元素
+dota_list = ['820', '430', 'zsmj', 'Mu']
+print(dota_list)
+
+# len() 函数可以获得list 元素的个数
+print(len(dota_list))
+
+# 可以索引每个位置的元素，索引从0 开始
+print(dota_list[0])
+print(dota_list[3])
+
+# 也可以从后面取元素，-1 表示最后一个元素
+print(dota_list[-1])
+print(dota_list[-2])
+
+# list 是可变的有序表，append 可以往list 中追加元素到末尾
+dota_list.append('longdd')
+print(dota_list)
+
+# 也可以将元素插入到指定位置 insert
+dota_list.insert(1, 'zhou')
+print(dota_list)
+
+# pop() 删除末尾的元素，pop(i) 删除指定位置的元素
+dota_list.pop()
+dota_list.pop(1)
+print(dota_list)
+
+# 要替换某个元素，直接赋值给对应的位置即可
+dota_list[3] = '剑来'
+print(dota_list)
+
+# list 里的元素类型也可以不同
+L = ['aaa', 123, True]
+print(L)
+
+# list 元素也可以是另一个list
+L1 = ['python', 'java', ['asp', 'php'], 'js']
+print(L1)
+print(len(L1))
+print(L1[2])
+
+
+print('---------------tuple----------------')
+# tuple 也是有序列表，但其一初始化就不能修改，因此，定义一个tuple 时，其元素就必须被确定下来
+dota_tuple = ('ame', 'Maybe', 'emo')
+print(dota_tuple)
+
+# 定义只有一个元素的tuple 时，需要加一个逗号，否则会按括号运算符计算，定义的就不是tuple 了
+t1 = (1, )
+print(t1)
+t0 = ()
+print(t0)
+
+# “可变的”tuple ，元素是list 时，list 可变，而tuple 指向list 不能变为其他的数据类型
+t = ('123', 'abc', ['111', '222'])
+print(t)
+t[2][0] = 'aaa'
+print(t)
+
+
+print('---------------条件判断----------------')
+# if else elif 实现条件判断，根据缩进规则，缩进的语句会跟在 if 或else 后执行
+age = 13
+if age >= 18:
+    print('your age is', age)
+    print('adult')
+elif age >= 6:
+    print('your age is', age)
+    print('teenager')
+else:
+    print('your age is', age)
+    print('kid')
+
+# 条件也可以简写 if x:  只要x 是非零数值、非空字符串、非空list等，就判断为True，否则为False
+
+# input() 读取控制台输入，返回的是str 类型，使用int() 函数转换为数字才能与数字比较
+str = input('birth: ')
+birth = int(str)
+if birth < 2000:
+    print('00前')
+else:
+    print('00后')
+
