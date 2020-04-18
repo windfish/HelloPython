@@ -184,10 +184,65 @@ else:
 # 条件也可以简写 if x:  只要x 是非零数值、非空字符串、非空list等，就判断为True，否则为False
 
 # input() 读取控制台输入，返回的是str 类型，使用int() 函数转换为数字才能与数字比较
-str = input('birth: ')
-birth = int(str)
-if birth < 2000:
-    print('00前')
-else:
-    print('00后')
+#str = input('birth: ')
+#birth = int(str)
+#if birth < 2000:
+#    print('00前')
+#else:
+#    print('00后')
+
+
+print('---------------循环----------------')
+# for...in 循环，依次把list或tuple中的每个元素迭代出来
+names = ['Micheal', 'Bob', 'Tracy']
+for name in names:
+    print(name)
+
+# range(n) 会生成一个从0开始，小于n 的整数序列
+sum = 0
+for x in range(10):
+    sum = sum + x
+print(sum)
+
+# while 循环，只要条件满足，就不断循环
+sum = 0
+n = 9
+while(n>0):
+    sum = sum + n
+    n = n - 2
+print(sum)
+
+# break 提前退出循环  continue 跳过当前的这次循环，直接开始下一次循环
+
+
+print('---------------dict 字典----------------')
+# dict 全程dictionary，相当于map，使用key-value 存储，key 必须用不可变对象
+d = {'Micheal':95, 'Bob':75, 'Tracy':85}
+print(d['Bob'])
+
+# key 不存在时会报错，可以通过in 判断是否存在，也可以通过dict 的get() 方法
+print('Jack' in d)
+print(d.get('Jack'))
+print(d.get('Jack', -1))
+
+# pop(key) 删除一个key-value
+d.pop('Bob')
+print(d)
+
+# set 和dict 类似，是一组key 的集合，但不存储value，并且在set 中，没有重复的key
+# 创建set 需要一个list 作为输入集合，重复的元素会自动过滤
+s = set([1, 2, 3, 2, 4, 1, 1])
+print(s)
+
+# add(key) 添加元素到set 中，remove(key) 删除元素
+s.add(5)
+print(s)
+s.remove(5)
+print(s)
+
+# set 可以看成数学意义上的无序和无重复元素的集合，可以做并集、交集等操作
+s1 = set([1, 2, 3])
+s2 = set([2, 3, 4])
+print(s1 & s2)  # 交集
+print(s1 | s2)  # 并集
 
