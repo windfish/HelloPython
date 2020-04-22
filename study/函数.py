@@ -131,7 +131,83 @@ print(calc_sum2())
 nums = [1, 2, 3, 5]
 print(calc_sum2(*nums))
 
-print('---------------------关键字参数------------------------')
+# 可变参数，允许传入0个或任意个参数，在函数调用时组装为一个tuple
 
+print('---------------------关键字参数------------------------')
+# 关键字参数，允许传入0个或任意个含参数名的参数，这些关键字参数在函数内部组装为一个dict，可以扩展函数的功能
+def person(name, age, **kw):
+    print('name:', name, 'age:', age, 'other:', kw)
+
+# 只传入必选参数
+person('Michael', 30)
+# 传入任意个数的关键字参数
+person('Bob', 35, city='Beijing')
+person('Adam', 45, gender='M', job='Engineer')
+
+# 可以先组装出一个dict，再转换为关键字参数传入，在dict 前加**，将dict 的key-value 传入函数的关键字参数中
+extra = {'city':'Tianjin', 'job':'Engineer'}
+person('Jack', 24, **extra)
+# 传入的是extra 的一份拷贝，对kw 的改动不影响extra
+
+print('---------------------命名关键字参数------------------------')
+# 如果要限制传入的关键字名称，需要使用命名关键字参数，使用 * 作为分隔符，* 后面的参数被视为命名关键字参数
+# 例如，只接受city 和job 作为关键字参数
+def person2(name, age, *, city, job):
+    print(name, age, city, job)
+
+person2('Jack', 24, city='Tianjin', job='Engineer')
+
+# 如果函数已经定义了一个可变参数，那么后面的命名关键字参数就不需要* 分隔符了，命名关键字还可以有默认值
+def person3(name, age, *args, city='Tianjin', job):
+    print(name, age, args, city, job)
+
+person3('Jack', 24, city='Tianjin', job='Engineer')
+person3('Jack', 24, job='Engineer')
+
+print('---------------------参数组合------------------------')
+# python 函数中，可以组合使用必选参数、默认参数、可变参数、关键字参数和命名关键字参数
+# 定义顺序必须是：必选参数、默认参数、可变参数、命名关键字参数、关键字参数
+
+
+print('---------------------递归函数------------------------')
+# 如果一个函数在内部调用自身本身，这个函数就是递归函数
+# 阶乘函数
+def fact(n):
+    if n==1:
+        return 1
+    return n * fact(n-1)
+
+print(fact(1))
+print(fact(5))
+
+# 使用递归函数要注意防止栈溢出
+# 函数调用是通过栈stack 来实现的，当进入一个函数调用，栈就会加一层栈帧，每当函数返回，栈就减少一层栈帧
+# 由于栈的大小不是无限的，那么递归次数过多，会导致栈溢出
+
+# 解决递归调用栈溢出的方法是通过尾递归优化，python 解释器并未针对尾递归做优化，因此也会导致栈溢出
+# 尾递归是，在函数返回的时候，调用自身，且return 语句不能包含表达式，这样编译器会优化尾递归，使递归只占用一个栈帧
+def fact2(n):
+    return fact_tail(n, 1)
+
+def fact_tail(num, product):
+    if num==1:
+        return product
+    return fact_tail(num-1, num * product)
+
+print(fact2(5))
+
+
+# 汉诺塔
+def move(n, a, b, c):
+    # n 表示A 柱子上盘子的数量
+    # print(n)
+    if n==1:
+        print(a, '-->', c)
+    else:
+        move(n-1, a, c, b)
+        move(1, a, b, c)
+        move(n-1, b, a, c)
+
+move(3, 'A', 'B', 'C')
 
 
