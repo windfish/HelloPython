@@ -154,9 +154,46 @@ while True:
         print("Generator return:", e.value)
         break
 
+# 杨辉三角
+def triangles():
+    result = [1]
+    while True:
+        yield result
+        tmp = []
+        n = 0
+        while n <= len(result):
+            if n == 0:
+                tmp.append(result[n])
+            elif n == len(result):
+                tmp.append(result[-1])
+            else:
+                tmp.append(result[n - 1] + result[n])
+            n = n + 1
+        result = tmp
 
 
+n = 0
+R = []
+for x in triangles():
+    R.append(x)
+    n = n + 1
+    if n >= 10:
+        break
+for r in R:
+    print(r)
 
+print('---------------迭代器----------------')
+# 可以被next() 函数调用并不断返回下一个值的对象，称为迭代器 Iterator
+# 可以使用isinstance() 判断一个对象是不是Iterator 对象
+from collections.abc import Iterator
+print(isinstance((x for x in range(10)), Iterator))
+print(isinstance([], Iterator))
+print(isinstance('abc', Iterator))
+
+# 生成器都是Iterator 对象，但list、tuple、str 虽然是Iterable，却不是Iterator
+# 把list、tuple、str 等Iterable 变为Iterator，可以使用Iter() 函数
+print(isinstance(iter([]), Iterator))
+print(isinstance(iter('abc'), Iterator))
 
 
 
