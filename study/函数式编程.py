@@ -156,6 +156,138 @@ def _count():
 c_1, c_2, c_3 = _count()
 print(c_1(), c_2(), c_3())
 
+def createCounter():
+    L = [0]
+    def counter():
+        L[0] = L[0] + 1
+        return L[0]
+    return counter
+
+counter = createCounter()
+print(counter(), counter(), counter(), counter())
+
+
+print('---------------匿名函数----------------')
+# lambda 表示匿名函数，冒汗前面的变量，表示函数参数
+f_lambda = lambda x: x * x
+print(f_lambda)
+print(f_lambda(5))
+
+# 也可以把匿名函数作为函数值返回
+def build(x, y):
+    return lambda: x * x + y * y
+
+
+print('---------------装饰器----------------')
+# 在代码运行期间动态增加功能的方式，称为装饰器 Decorator
+def log(func):
+    def wrapper(*args, **kw):
+        print('call %s():' % func.__name__)
+        return func(*args, **kw)
+    return wrapper
+
+@log
+def now():
+    print('2020-4-30')
+
+# @log 相当于执行了 now = log(now)，原函数仍然存在，只是同名的now 指向了包装过的函数，即log 返回的wrapper 函数
+# wrapper() 函数参数定义是(*args, **kw)，因此可以接受任意参数的调用
+now()
+
+# 如果decorator 本身需要传入参数，那么需要一个返回decorator 的高阶函数
+def _log(text):
+    def decorator(func):
+        def wrapper(*args, **kw):
+            print('%s %s():' % (text, func.__name__))
+            return func(*args, **kw)
+        return wrapper
+    return decorator
+
+@_log('execute')
+def now():
+    print('2020-4-30')
+
+# @_log('execute') 相当于执行 now = _log('execute')(now)，返回的最终还是wrapper 函数
+now()
+
+print(now.__name__)
+# 但返回的函数名 __name__ 是wrapper，需要将原始的函数名复制给wrapper 函数，否则有些依赖函数签名的代码执行就会出错
+# Python 内置的 functools.wraps 就是做这个事的
+import functools
+
+def __log(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kw):
+        print('call %s():' % func.__name__)
+        return func(*args, **kw)
+    return wrapper
+
+@__log
+def now():
+    print('2020-4-30')
+
+now()
+print(now.__name__)
+
+# 打印函数执行时间的decorator
+import time
+
+def metric(fn):
+    @functools.wraps(fn)
+    def wrapper(*args, **kw):
+        begin = time.time()
+        result = fn(*args, **kw)
+        end = time.time()
+        duration = end - begin
+        print('%s executed in %s ms' % (fn.__name__, duration))
+        return result
+    return wrapper
+
+@metric
+def fast(x, y):
+    time.sleep(0.0012)
+    return x + y;
+
+@metric
+def slow(x, y, z):
+    time.sleep(0.1234)
+    return x * y * z;
+
+print('fast result:', fast(11, 22))
+print('slow result:', slow(11, 22, 33))
+
+
+def log_last(params='call'):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kw):
+            # if len(params) == 0:
+            #     print('call %s():' % func.__name__)
+            # else:
+            print('%s %s():' % (params, func.__name__))
+            return func(*args, **kw)
+        return wrapper
+    return decorator
+
+@log_last()
+def test():
+    print('no params')
+
+test()
+
+@log_last('execute')
+def test():
+    print('have a params')
+
+test()
+
+print('---------------偏函数----------------')
+# 偏函数，就是把一个函数的某些参数给固定住（设置默认值），返回一个新的函数，调用这个新函数更简单
+from functools import partial
+int2 = partial(int, base=2)
+print(int2('00000100'))
+print(int2('10101010', base=10))
+
 
 
 

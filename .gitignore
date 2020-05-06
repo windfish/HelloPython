@@ -1,3 +1,4 @@
 # 忽略的文件
 .idea/
 venv/
+study/__pycache__/
