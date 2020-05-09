@@ -171,6 +171,7 @@ class Student3(object):
 s3 = Student3('s3')
 print(s3.name, s3.score)
 
+
 # 还可以利用__getattr__，写一个链式调用
 class Chain(object):
 
@@ -180,12 +181,85 @@ class Chain(object):
     def __getattr__(self, path):
         return Chain('%s/%s' % (self._path, path))
 
+    def __call__(self, path):
+        return Chain('%s/%s' % (self._path, path))
+
     def __str__(self):
         return self._path
 
     __repr__ = __str__
 
 
-print(Chain().user.list)
+print(Chain().user.list)  # 链式调用，不论url api怎么变，都可以根据url 动态调用
+print(Chain().users('ted').repos)  # 带参数的链式调用
+
+
+# __call__() 方法，可以直接对实例进行调用，即instance()；默认的调用方式是instance.method()
+class Student4(object):
+    def __init__(self, name):
+        self.__name = name
+
+    def __call__(self):
+        print('My name is %s' % self.__name)
+
+
+s4 = Student4('Ted')
+s4()
+
+# callable() 判断一个对象是否是Callable 可调用对象
+print(callable(Student()))
+print(callable(s4))
+print(callable(abs))
+
+
+print('-------------------枚举类-----------------------')
+from enum import Enum, unique
+
+
+Month = Enum('Month', ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'))
+for name, member in Month.__members__.items():
+    print(name, '=>', member, ',', member.value)
+
+
+# 还可以从Enum 派生出自定义类，@unique 保证没有重复值
+@unique
+class Weekday(Enum):
+    Sun = 0
+    Mon = 1
+    Tue = 2
+    Wed = 3
+    Thu = 4
+    Fri = 5
+    Sat = 6
+
+
+# 既可以使用成员名称引用枚举常量，又可以直接根据value 的值获取枚举常量
+print(Weekday.Mon, Weekday['Tue'], Weekday(5))
+
+print('-------------------元类-----------------------')
+# type() 可以查看一个类型或变量的类型
+# class 返回的类型是type，s4 是一个实例，返回的是class Student4
+print(type(Student4), type(s4))
+
+
+# type() 也可以创建出新的类型，创建class 对象，依次传入三个参数：
+# 1. class 的名称；
+# 2. 继承的父类集合，tuple 方式，单父类需注意tuple 的单元素写法；
+# 3.class 方法名称与函数绑定
+def fn(self, name="world"):
+    print('Hello, %s' % name)
+
+def note(self):
+    print('This is dynamic created class')
+
+
+First = type('First', (object,), dict(echo=fn, note=note))  # 创建Hello class
+h = First()
+h.echo()
+h.note()
+
+
+
+
 
 
