@@ -259,6 +259,118 @@ h.echo()
 h.note()
 
 
+# 要控制类的创建行为，还可以使用 metaclass 元类
+# metaclass 允许创建类或修改类：先定义metaclass，就可以创建类，然后创建实例
+
+# metaclass 是类的模板，从type 派生
+class ListMetaclass(type):
+    # 接收的参数：
+    # 1. 当前准备创建的类的对象
+    # 2. 类的名字
+    # 3. 类继承的父类集合
+    # 4. 类的方法集合
+    def __new__(cls, name, bases, attrs):
+        attrs['add'] = lambda self, value: self.append(value)
+        return type.__new__(cls, name, bases, attrs)
+
+
+class MyList(list, metaclass=ListMetaclass):
+    pass
+
+
+L = MyList()
+L.add(1)
+print(L)
+
+
+print('-------------------自定义ORM 运用metaclass-----------------------')
+# 自定义ORM 框架
+# Field 类，负载保存数据库表的字段名和字段类型
+class Field(object):
+
+    def __init__(self, name, column_type):
+        self.name = name
+        self.column_type = column_type
+
+    def __str__(self):
+        return '%s:%s' % (self.__class__.__name__, self.name)
+
+
+class IntegerField(Field):
+    def __init__(self, name):
+        super(IntegerField, self).__init__(name, 'bigint')
+
+
+class StringField(Field):
+    def __init__(self, name):
+        super(StringField, self).__init__(name, "varchar(100)")
+
+
+# 1. Model 类不特殊处理，直接创建
+# 2. 在类中查找定义的类的所有属性，找到一个Field 属性，就把他保存到__mappings__ 中
+# 3. 把表名保存到__table__ 中
+class ModelMetaclass(type):
+
+    def __new__(cls, name, bases, attrs):
+        if name == 'Model':
+            return type.__new__(cls, name, bases, attrs)
+        print('Found Model: %s' % name)
+        mappings = dict()
+        for k, v in attrs.items():
+            if isinstance(v, Field):
+                print('Found mapping: %s ==> %s' % (k, v))
+                mappings[k] = v
+        for k in mappings.keys():
+            attrs.pop(k)
+        attrs['__mappings__'] = mappings  # 保存属性和列的映射关系
+        attrs['__table__'] = name  # 假设表名和类名一致
+        return type.__new__(cls, name, bases, attrs)
+
+
+# 定义操作数据库的方法
+class Model(dict, metaclass=ModelMetaclass):
+
+    def __init__(self, **kw):
+        super(Model, self).__init__(**kw)
+
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError:
+            raise AttributeError(r"'Model' object has no attribute '%s'" % key)
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+    def save(self):
+        fields = []
+        params = []
+        args = []
+        for k, v in self.__mappings__.items():
+            fields.append(v.name)
+            params.append('?')
+            args.append(getattr(self, k, None))
+        sql = 'insert into %s (%s) values (%s)' % (self.__table__, ','.join(fields), ','.join(params))
+        print('SQL: %s' % sql)
+        print('ARGS: %s' % str(args))
+
+
+# 数据库表的映射类
+class User(Model):
+    # 定义类的属性到列的映射
+    id = IntegerField('id')
+    name = StringField('name')
+    email = StringField('email')
+    password = StringField('password')
+
+
+# 创建实例
+user = User(id=123, name='Ted', email='test@qq.com', password='pwd')
+# 保存
+user.save()
+
+
+
 
 
 
