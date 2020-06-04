@@ -1,0 +1,25 @@
+virtualenv 用来为应用创建一套“隔离”的Python 运行环境，以便不同应用可以依赖同一模块的不同版本
+
+安装虚拟环境的步骤：
+1、 使用pip 安装virtualenv
+```
+pip3 install virtualenv
+```
+2、 创建项目目录
+```
+mkdir project
+```
+3、 创建一个独立的Python 运行环境，命名为venv
+```
+# --no-site-package 表示已安装在系统Python 环境的包都不会复制过来
+virtualenv --no-site-package venv
+```
+4、 进入venv 环境下，需进入Scripts 目录下
+```
+# 进入venv 虚拟环境
+source activate
+# 退出venv 虚拟环境
+deactivate
+```
+
+PyCharm 可在 File | Settings | Project: HelloPython | Project Interpreter 中设置虚拟环境
