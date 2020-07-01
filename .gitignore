@@ -2,3 +2,4 @@
 .idea/
 venv/
 study/__pycache__/
+py3-webapp/www/__pycache__/
